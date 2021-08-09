@@ -372,7 +372,9 @@ namespace Binance.Net.SubClients.Spot
         /// <returns>List of open orders</returns>
         public async Task<WebCallResult<IEnumerable<BinanceOrder>>> GetOpenOrdersAsync(string? symbol = null, int? receiveWindow = null, CancellationToken ct = default)
         {
-            symbol?.ValidateBinanceSymbol();
+            //no need
+            // symbol?.ValidateBinanceSymbol();
+
             var timestampResult = await _baseClient.CheckAutoTimestamp(ct).ConfigureAwait(false);
             if (!timestampResult)
                 return new WebCallResult<IEnumerable<BinanceOrder>>(timestampResult.ResponseStatusCode, timestampResult.ResponseHeaders, null, timestampResult.Error);
@@ -382,7 +384,8 @@ namespace Binance.Net.SubClients.Spot
                 { "timestamp", _baseClient.GetTimestamp() }
             };
             parameters.AddOptionalParameter("recvWindow", receiveWindow?.ToString(CultureInfo.InvariantCulture) ?? _baseClient.DefaultReceiveWindow.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("symbol", symbol);
+            if(string.IsNullOrWhiteSpace(symbol) == false)
+                parameters.AddOptionalParameter("symbol", symbol);
 
             return await _baseClient.SendRequestInternal<IEnumerable<BinanceOrder>>(_baseClient.GetUrlSpot(openOrdersEndpoint, api, signedVersion), HttpMethod.Get, ct, parameters, true).ConfigureAwait(false);
         }
