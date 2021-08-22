@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Binance.Net.Enums;
 using Binance.Net.Objects;
+using Binance.Net.Objects.Other;
 using Binance.Net.Objects.Spot.MarginData;
 using Binance.Net.Objects.Spot.SpotData;
 using Binance.Net.Objects.Spot.WalletData;
@@ -317,5 +318,13 @@ namespace Binance.Net.Interfaces.SubClients
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
         Task<WebCallResult<BinanceQueryRecords<BinanceTransfer>>> GetTransfers(UniversalTransferType type, DateTime? startTime = null, DateTime? endTime = null, int? page = null, int? pageSize = null, int? receiveWindow = null, CancellationToken ct = default);
+    
+        /// <summary>
+        /// GetAPIKeyPermissionsAsync
+        /// </summary>
+        /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns></returns>
+        Task<WebCallResult<BinanceAPIKeyPermissions>> GetAPIKeyPermissionsAsync(int? receiveWindow = null, CancellationToken ct = default);
     }
 }

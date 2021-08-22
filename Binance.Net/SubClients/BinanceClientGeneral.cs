@@ -9,6 +9,7 @@ using Binance.Net.Converters;
 using Binance.Net.Enums;
 using Binance.Net.Interfaces.SubClients;
 using Binance.Net.Objects;
+using Binance.Net.Objects.Other;
 using Binance.Net.Objects.Spot.MarginData;
 using Binance.Net.Objects.Spot.SpotData;
 using Binance.Net.Objects.Spot.WalletData;
@@ -28,6 +29,7 @@ namespace Binance.Net.SubClients
         private const string accountSnapshotEndpoint = "accountSnapshot";
         private const string accountStatusEndpoint = "accountStatus.html";
         private const string tradingStatusEndpoint = "apiTradingStatus.html";
+        private const string apiRestrictionsEndpoint = "account/apiRestrictions ";
 
         private const string dividendRecordsEndpoint = "asset/assetDividend";
 
@@ -231,6 +233,29 @@ namespace Binance.Net.SubClients
             parameters.AddOptionalParameter("recvWindow", receiveWindow?.ToString(CultureInfo.InvariantCulture) ?? _baseClient.DefaultReceiveWindow.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));
 
             return await _baseClient.SendRequestInternal<BinanceAccountInfo>(_baseClient.GetUrlSpot(accountInfoEndpoint, "api", "3"), HttpMethod.Get, ct, parameters, true).ConfigureAwait(false);
+        }
+        #endregion
+
+        #region API Key Permission
+        /// <summary>
+        /// Get permission info for the current API key
+        /// </summary>
+        /// <param name="receiveWindow">The receive window for which this request is active. When the request takes longer than this to complete the server will reject the request</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>Permission info</returns>
+        public async Task<WebCallResult<BinanceAPIKeyPermissions>> GetAPIKeyPermissionsAsync(int? receiveWindow = null, CancellationToken ct = default)
+        {
+            var timestampResult = await _baseClient.CheckAutoTimestamp(ct).ConfigureAwait(false);
+            if (!timestampResult)
+                return new WebCallResult<BinanceAPIKeyPermissions>(timestampResult.ResponseStatusCode, timestampResult.ResponseHeaders, null, timestampResult.Error);
+
+            var parameters = new Dictionary<string, object>
+            {
+                { "timestamp", _baseClient.GetTimestamp() },
+            };
+            parameters.AddOptionalParameter("recvWindow", receiveWindow?.ToString(CultureInfo.InvariantCulture) ?? _baseClient.DefaultReceiveWindow.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));
+
+            return await _baseClient.SendRequestInternal<BinanceAPIKeyPermissions>(_baseClient.GetUrlSpot(apiRestrictionsEndpoint, "sapi", "1"), HttpMethod.Get, ct, parameters, true).ConfigureAwait(false);
         }
         #endregion
 
