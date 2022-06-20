@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Binance.Net.Enums
+﻿namespace Binance.Net.Enums
 {
     /// <summary>
     /// Resale status
@@ -14,9 +10,9 @@ namespace Binance.Net.Enums
         /// </summary>
         Processing,
         /// <summary>
-        /// Cancelled
+        /// Canceled
         /// </summary>
-        Cancelled,
+        Canceled,
         /// <summary>
         /// Terminated
         /// </summary>

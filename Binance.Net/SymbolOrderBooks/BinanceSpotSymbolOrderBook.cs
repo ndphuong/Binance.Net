@@ -1,6 +1,10 @@
-﻿using System.Threading.Tasks;
-using Binance.Net.Objects.Spot;
-using Binance.Net.Objects.Spot.MarketData;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Binance.Net.Clients;
+using Binance.Net.Interfaces;
+using Binance.Net.Interfaces.Clients;
+using Binance.Net.Objects;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.OrderBook;
 using CryptoExchange.Net.Sockets;
@@ -13,8 +17,11 @@ namespace Binance.Net.SymbolOrderBooks
     /// </summary>
     public class BinanceSpotSymbolOrderBook : SymbolOrderBook
     {
-        private readonly BinanceClient _restClient;
-        private readonly BinanceSocketClient _socketClient;
+        private readonly IBinanceClient _restClient;
+        private readonly IBinanceSocketClient _socketClient;
+        private readonly TimeSpan _initialDataTimeout;
+        private readonly bool _restOwner;
+        private readonly bool _socketOwner;
         private readonly int? _updateInterval;
 
         /// <summary>
@@ -22,58 +29,78 @@ namespace Binance.Net.SymbolOrderBooks
         /// </summary>
         /// <param name="symbol">The symbol of the order book</param>
         /// <param name="options">The options for the order book</param>
-        public BinanceSpotSymbolOrderBook(string symbol, BinanceOrderBookOptions? options = null) : base(symbol, options ?? new BinanceOrderBookOptions())
+        public BinanceSpotSymbolOrderBook(string symbol, BinanceOrderBookOptions? options = null) : base("Binance", symbol, options ?? new BinanceOrderBookOptions())
         {
             symbol.ValidateBinanceSymbol();
             Levels = options?.Limit;
             _updateInterval = options?.UpdateInterval;
-            _restClient = new BinanceClient();
-            _socketClient = new BinanceSocketClient();
+            _initialDataTimeout = options?.InitialDataTimeout ?? TimeSpan.FromSeconds(30);
+            _socketClient = options?.SocketClient ?? new BinanceSocketClient();
+            _restClient = options?.RestClient ?? new BinanceClient();
+            _restOwner = options?.RestClient == null;
+            _socketOwner = options?.SocketClient == null;
+
+            sequencesAreConsecutive = options?.Limit == null;
+            strictLevels = false;
         }
 
         /// <inheritdoc />
-        protected override async Task<CallResult<UpdateSubscription>> DoStart()
+        protected override async Task<CallResult<UpdateSubscription>> DoStartAsync(CancellationToken ct)
         {
             CallResult<UpdateSubscription> subResult;
             if (Levels == null)
-                subResult = await _socketClient.Spot.SubscribeToOrderBookUpdatesAsync(Symbol, _updateInterval, data => HandleUpdate((BinanceOrderBook)data)).ConfigureAwait(false);
+                subResult = await _socketClient.SpotStreams.SubscribeToOrderBookUpdatesAsync(Symbol, _updateInterval, HandleUpdate).ConfigureAwait(false);
             else
-                subResult = await _socketClient.Spot.SubscribeToPartialOrderBookUpdatesAsync(Symbol, Levels.Value, _updateInterval, data => HandleUpdate((BinanceOrderBook)data)).ConfigureAwait(false);
+                subResult = await _socketClient.SpotStreams.SubscribeToPartialOrderBookUpdatesAsync(Symbol, Levels.Value, _updateInterval, HandleUpdate).ConfigureAwait(false);
 
             if (!subResult)
-                return new CallResult<UpdateSubscription>(null, subResult.Error);
+                return new CallResult<UpdateSubscription>(subResult.Error!);
+
+            if (ct.IsCancellationRequested)
+            {
+                await subResult.Data.CloseAsync().ConfigureAwait(false);
+                return subResult.AsError<UpdateSubscription>(new CancellationRequestedError());
+            }
 
             Status = OrderBookStatus.Syncing;
             if (Levels == null)
             {
-                var bookResult = await _restClient.Spot.Market.GetOrderBookAsync(Symbol, Levels ?? 5000).ConfigureAwait(false);
+                // Small delay to make sure the snapshot is from after our first stream update
+                await Task.Delay(200).ConfigureAwait(false);
+                var bookResult = await _restClient.SpotApi.ExchangeData.GetOrderBookAsync(Symbol, Levels ?? 5000).ConfigureAwait(false);
                 if (!bookResult)
                 {
-                    await _socketClient.UnsubscribeAll().ConfigureAwait(false);
-                    return new CallResult<UpdateSubscription>(null, bookResult.Error);
+                    log.Write(Microsoft.Extensions.Logging.LogLevel.Debug, $"{Id} order book {Symbol} failed to retrieve initial order book");
+                    await _socketClient.UnsubscribeAsync(subResult.Data).ConfigureAwait(false);
+                    return new CallResult<UpdateSubscription>(bookResult.Error!);
                 }
 
                 SetInitialOrderBook(bookResult.Data.LastUpdateId, bookResult.Data.Bids, bookResult.Data.Asks);
             }
             else
             {
-                var setResult = await WaitForSetOrderBook(10000).ConfigureAwait(false);
-                return setResult ? subResult : new CallResult<UpdateSubscription>(null, setResult.Error);
+                var setResult = await WaitForSetOrderBookAsync(_initialDataTimeout, ct).ConfigureAwait(false);
+                return setResult ? subResult : new CallResult<UpdateSubscription>(setResult.Error!);
             }
 
-            return new CallResult<UpdateSubscription>(subResult.Data, null);
+            return new CallResult<UpdateSubscription>(subResult.Data);
         }
 
-        private void HandleUpdate(BinanceOrderBook data)
+        private void HandleUpdate(DataEvent<IBinanceEventOrderBook> data)
         {
-            if (Levels == null)
-            {
-                UpdateOrderBook(data.LastUpdateId, data.Bids, data.Asks);
-            }
+            if(data.Data.FirstUpdateId != null)
+                UpdateOrderBook(data.Data.FirstUpdateId.Value, data.Data.LastUpdateId, data.Data.Bids, data.Data.Asks);
             else
-            {
-                SetInitialOrderBook(data.LastUpdateId, data.Bids, data.Asks);
-            }
+                UpdateOrderBook(data.Data.LastUpdateId, data.Data.Bids, data.Data.Asks);
+        }
+
+
+        private void HandleUpdate(DataEvent<IBinanceOrderBook> data)
+        {
+            if (Levels == null)            
+                UpdateOrderBook(data.Data.LastUpdateId, data.Data.Bids, data.Data.Asks);            
+            else            
+                SetInitialOrderBook(data.Data.LastUpdateId, data.Data.Bids, data.Data.Asks);            
         }
 
         /// <inheritdoc />
@@ -82,28 +109,28 @@ namespace Binance.Net.SymbolOrderBooks
         }
 
         /// <inheritdoc />
-        protected override async Task<CallResult<bool>> DoResync()
+        protected override async Task<CallResult<bool>> DoResyncAsync(CancellationToken ct)
         {
             if (Levels != null)
-                return await WaitForSetOrderBook(10000).ConfigureAwait(false);
+                return await WaitForSetOrderBookAsync(_initialDataTimeout, ct).ConfigureAwait(false);
 
-            var bookResult = await _restClient.Spot.Market.GetOrderBookAsync(Symbol, Levels ?? 5000).ConfigureAwait(false);
+            var bookResult = await _restClient.SpotApi.ExchangeData.GetOrderBookAsync(Symbol, Levels ?? 5000).ConfigureAwait(false);
             if (!bookResult)
-                return new CallResult<bool>(false, bookResult.Error);
+                return new CallResult<bool>(bookResult.Error!);
 
             SetInitialOrderBook(bookResult.Data.LastUpdateId, bookResult.Data.Bids, bookResult.Data.Asks);
-            return new CallResult<bool>(true, null);
+            return new CallResult<bool>(true);
         }
 
         /// <inheritdoc />
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            processBuffer.Clear();
-            asks.Clear();
-            bids.Clear();
+            if (_restOwner)
+                _restClient?.Dispose();
+            if (_socketOwner)
+                _socketClient?.Dispose();
 
-            _restClient?.Dispose();
-            _socketClient?.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

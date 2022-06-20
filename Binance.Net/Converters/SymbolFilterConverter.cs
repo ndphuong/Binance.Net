@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
-using Binance.Net.Objects.Spot.MarketData;
+using Binance.Net.Objects.Models.Spot;
 
 namespace Binance.Net.Converters
 {
@@ -87,8 +87,27 @@ namespace Binance.Net.Converters
                         MaxPosition = obj.ContainsKey("maxPosition") ? (decimal)obj["maxPosition"] : 0
                     };
                     break;
+                case SymbolFilterType.PercentagePriceBySide:
+                    result = new BinanceSymbolPercentPriceBySideFilter
+                    {
+                        AskMultiplierUp = (decimal)obj["askMultiplierUp"],
+                        AskMultiplierDown = (decimal)obj["askMultiplierDown"],
+                        BidMultiplierUp = (decimal)obj["bidMultiplierUp"],
+                        BidMultiplierDown = (decimal)obj["bidMultiplierDown"],
+                        AveragePriceMinutes = (int)obj["avgPriceMins"]
+                    };
+                    break;
+                case SymbolFilterType.TrailingDelta:
+                    result = new BinanceSymbolTrailingDeltaFilter
+                    {
+                        MaxTrailingAboveDelta = (int)obj["maxTrailingAboveDelta"],
+                        MaxTrailingBelowDelta = (int)obj["maxTrailingBelowDelta"],
+                        MinTrailingAboveDelta = (int)obj["minTrailingAboveDelta"],
+                        MinTrailingBelowDelta = (int)obj["minTrailingBelowDelta"],
+                    };
+                    break;
                 default:
-                    Debug.WriteLine("Can't parse symbol filter of type: " + obj["filterType"]);
+                    Trace.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss:fff} | Warning | Can't parse symbol filter of type: " + obj["filterType"]);
                     result = new BinanceSymbolFilter();
                     break;
             }
@@ -167,8 +186,19 @@ namespace Binance.Net.Converters
                     writer.WritePropertyName("avgPriceMins");
                     writer.WriteValue(pricePercentFilter.AveragePriceMinutes);
                     break;
+                case SymbolFilterType.TrailingDelta:
+                    var TrailingDelta = (BinanceSymbolTrailingDeltaFilter)filter;
+                    writer.WritePropertyName("maxTrailingAboveDelta");
+                    writer.WriteValue(TrailingDelta.MaxTrailingAboveDelta);
+                    writer.WritePropertyName("maxTrailingBelowDelta");
+                    writer.WriteValue(TrailingDelta.MaxTrailingBelowDelta);
+                    writer.WritePropertyName("minTrailingAboveDelta");
+                    writer.WriteValue(TrailingDelta.MinTrailingAboveDelta);
+                    writer.WritePropertyName("minTrailingBelowDelta");
+                    writer.WriteValue(TrailingDelta.MinTrailingBelowDelta);
+                    break;
                 default:
-                    Debug.WriteLine("Can't write symbol filter of type: " + filter.FilterType);
+                    Trace.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss:fff} | Warning | Can't write symbol filter of type: " + filter.FilterType);
                     break;
             }
 

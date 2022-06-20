@@ -1,8 +1,6 @@
 ﻿using Binance.Net.Enums;
 using CryptoExchange.Net.Converters;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Binance.Net.Converters
 {
@@ -14,7 +12,7 @@ namespace Binance.Net.Converters
         protected override List<KeyValuePair<HashrateResaleStatus, string>> Mapping => new List<KeyValuePair<HashrateResaleStatus, string>>
         {
             new KeyValuePair<HashrateResaleStatus, string>(HashrateResaleStatus.Processing, "0"),
-            new KeyValuePair<HashrateResaleStatus, string>(HashrateResaleStatus.Cancelled, "1"),
+            new KeyValuePair<HashrateResaleStatus, string>(HashrateResaleStatus.Canceled, "1"),
             new KeyValuePair<HashrateResaleStatus, string>(HashrateResaleStatus.Terminated, "2"),
         };
     }

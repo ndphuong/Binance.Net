@@ -1,175 +1,251 @@
-# ![Icon](https://github.com/JKorf/Binance.Net/blob/master/Binance.Net/Icon/icon.png?raw=true) Binance.Net 
+# Binance.Net
+[![.NET](https://github.com/JKorf/Binance.Net/actions/workflows/dotnet.yml/badge.svg)](https://github.com/JKorf/Binance.Net/actions/workflows/dotnet.yml) ![Nuget version](https://img.shields.io/nuget/v/binance.net.svg)  ![Nuget downloads](https://img.shields.io/nuget/dt/Binance.Net.svg)
 
-![Build status](https://travis-ci.org/JKorf/Binance.Net.svg?branch=master)
-
-A .Net wrapper for the Binance API as described on [Binance](https://binance-docs.github.io/apidocs/spot/en/#change-log), including all features the API provides (Spot, (Isolated) margin and futures) using clear and readable objects.
+Binance.Net is a wrapper around the Binance API as described on [Binance](https://binance-docs.github.io/apidocs/spot/en/#change-log), including all features the API provides using clear and readable objects. The library support the spot, (isolated) margin and futures API's, both the REST and websocket API's.
 
 **If you think something is broken, something is missing or have any questions, please open an [Issue](https://github.com/JKorf/Binance.Net/issues)**
 
-## CryptoExchange.Net
-Implementation is build upon the CryptoExchange.Net library, make sure to also check out the documentation on that: [docs](https://github.com/JKorf/CryptoExchange.Net)
+[Documentation](https://jkorf.github.io/Binance.Net/)
 
-Other CryptoExchange.Net implementations:
-<table>
-<tr>
-<td><a href="https://github.com/JKorf/Bittrex.Net"><img src="https://github.com/JKorf/Bittrex.Net/blob/master/Bittrex.Net/Icon/icon.png?raw=true"></a>
-<br />
-<a href="https://github.com/JKorf/Bittrex.Net">Bittrex</a>
-</td>
-<td><a href="https://github.com/JKorf/Bitfinex.Net"><img src="https://github.com/JKorf/Bitfinex.Net/blob/master/Bitfinex.Net/Icon/icon.png?raw=true"></a>
-<br />
-<a href="https://github.com/JKorf/Bitfinex.Net">Bitfinex</a>
-</td>
-<td><a href="https://github.com/JKorf/CoinEx.Net"><img src="https://github.com/JKorf/CoinEx.Net/blob/master/CoinEx.Net/Icon/icon.png?raw=true"></a>
-<br />
-<a href="https://github.com/JKorf/CoinEx.Net">CoinEx</a>
-</td>
-<td><a href="https://github.com/JKorf/Huobi.Net"><img src="https://github.com/JKorf/Huobi.Net/blob/master/Huobi.Net/Icon/icon.png?raw=true"></a>
-<br />
-<a href="https://github.com/JKorf/Huobi.Net">Huobi</a>
-</td>
-<td><a href="https://github.com/JKorf/Kucoin.Net"><img src="https://github.com/JKorf/Kucoin.Net/blob/master/Kucoin.Net/Icon/icon.png?raw=true"></a>
-<br />
-<a href="https://github.com/JKorf/Kucoin.Net">Kucoin</a>
-</td>
-<td><a href="https://github.com/JKorf/Kraken.Net"><img src="https://github.com/JKorf/Kraken.Net/blob/master/Kraken.Net/Icon/icon.png?raw=true"></a>
-<br />
-<a href="https://github.com/JKorf/Kraken.Net">Kraken</a>
-</td>
-</tr>
-</table>
-Implementations from third parties:
-<table>
-<tr>
-<td><a href="https://github.com/Zaliro/Switcheo.Net"><img src="https://github.com/Zaliro/Switcheo.Net/blob/master/Resources/switcheo-coin.png?raw=true"></a>
-<br />
-<a href="https://github.com/Zaliro/Switcheo.Net">Switcheo</a>
-</td>
-<td><a href="https://github.com/ridicoulous/LiquidQuoine.Net"><img src="https://github.com/ridicoulous/LiquidQuoine.Net/blob/master/Resources/icon.png?raw=true"></a>
-<br />
-<a href="https://github.com/ridicoulous/LiquidQuoine.Net">Liquid</a>
-</td>
-<td><a href="https://github.com/ridicoulous/Bitmex.Net"><img src="https://github.com/ridicoulous/Bitmex.Net/blob/master/Bitmex.Net/Icon/icon.png"></a>
-<br />
-<a href="https://github.com/ridicoulous/Bitmex.Net">Bitmex</a>
-</td>
-<td><a href="https://github.com/intelligences/HitBTC.Net"><img src="https://github.com/intelligences/HitBTC.Net/blob/master/src/HitBTC.Net/Icon/icon.png?raw=true"></a>
-<br />
-<a href="https://github.com/intelligences/HitBTC.Net">HitBTC</a>
-</td>
-<td><a href="https://github.com/EricGarnier/LiveCoin.Net"><img src="https://github.com/EricGarnier/LiveCoin.Net/blob/master/LiveCoin.Net/Icon/icon.png?raw=true"></a>
-<br />
-<a href="https://github.com/EricGarnier/LiveCoin.Net">LiveCoin</a>
-</td>
-<td><a href="https://github.com/burakoner/OKEx.Net"><img src="https://github.com/burakoner/OKEx.Net/blob/master/Okex.Net/Icon/icon.png?raw=true"></a>
-<br />
-<a href="https://github.com/burakoner/OKEx.Net">OKEx</a>
-</td>
-<td><a href="https://github.com/burakoner/Chiliz.Net"><img src="https://github.com/burakoner/Chiliz.Net/blob/master/Chiliz.Net/Icon/icon.png?raw=true"></a>
-<br />
-<a href="https://github.com/burakoner/Chiliz.Net">Chiliz</a>
-</td>
-<td><a href="https://github.com/burakoner/BtcTurk.Net"><img src="https://github.com/burakoner/BtcTurk.Net/blob/master/BtcTurk.Net/Icon/icon.png?raw=true"></a>
-<br />
-<a href="https://github.com/burakoner/BtcTurk.Net">BtcTurk</a>
-</td>
-<td><a href="https://github.com/burakoner/Thodex.Net"><img src="https://github.com/burakoner/Thodex.Net/blob/master/Thodex.Net/Icon/icon.png?raw=true"></a>
-<br />
-<a href="https://github.com/burakoner/Thodex.Net">Thodex</a>
-</td>
-<td><a href="https://github.com/d-ugarov/Exante.Net"><img src="https://github.com/d-ugarov/Exante.Net/blob/master/Exante.Net/Icon/icon.png?raw=true"></a>
-<br />
-<a href="https://github.com/d-ugarov/Exante.Net">Exante</a>
-</td>
-</tr>
-</table>
-
-## Donations
-I develop and maintain this package on my own for free in my spare time. Donations are greatly appreciated.
+## Donate / Sponsor
+I develop and maintain this package on my own for free in my spare time. Donations are greatly appreciated. If you prefer to donate any other currency please contact me.
 
 **Btc**:  12KwZk3r2Y3JZ2uMULcjqqBvXmpDwjhhQS  
 **Eth**:  0x069176ca1a4b1d6e0b7901a6bc0dbf3bb0bf5cc2  
 **Nano**: xrb_1ocs3hbp561ef76eoctjwg85w5ugr8wgimkj8mfhoyqbx4s1pbc74zggw7gs  
 
+Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf)  
+
 ## Discord
 A Discord server is available [here](https://discord.gg/MSpeEtSY8t). For discussion and/or questions around the CryptoExchange.Net and implementation libraries, feel free to join.
 
-
-## Installation
-![Nuget version](https://img.shields.io/nuget/v/binance.net.svg)  ![Nuget downloads](https://img.shields.io/nuget/dt/Binance.Net.svg)
-Available on [Nuget](https://www.nuget.org/packages/Binance.Net/).
-```
-pm> Install-Package Binance.Net
-```
-To get started with Binance.Net first you will need to get the library itself. The easiest way to do this is to install the package into your project using  [NuGet](https://www.nuget.org/packages/Binance.Net/). Using Visual Studio this can be done in two ways.
-
-### Using the package manager
-In Visual Studio right click on your solution and select 'Manage NuGet Packages for solution...'. A screen will appear which initially shows the currently installed packages. In the top bit select 'Browse'. This will let you download net package from the NuGet server. In the search box type 'Binance.Net' and hit enter. The Binance.Net package should come up in the results. After selecting the package you can then on the right hand side select in which projects in your solution the package should install. After you've selected all project you wish to install and use Binance.Net in hit 'Install' and the package will be downloaded and added to you projects.
-
-### Using the package manager console
-In Visual Studio in the top menu select 'Tools' -> 'NuGet Package Manager' -> 'Package Manager Console'. This should open up a command line interface. On top of the interface there is a dropdown menu where you can select the Default Project. This is the project that Binance.Net will be installed in. After selecting the correct project type  `Install-Package Binance.Net`  in the command line interface. This should install the latest version of the package in your project.
-
-After doing either of above steps you should now be ready to actually start using Binance.Net.
-## Getting started
-After installing it's time to actually use it. To get started we have to add the Binance.Net namespace:  `using Binance.Net;`.
-
-Binance.Net provides two clients to interact with the Binance API. The  `BinanceClient`  provides all rest API calls. The  `BinanceSocketClient`  provides functions to interact with the websocket provided by the Binance API. Both clients are disposable and as such can be used in a  `using`statement.
-
-## Examples
-Examples can be found in the Examples folder.
-
-## Timestamping
-Requests made to Binance are checked for a correct timestamp. When requests are send a timestamp is added to the message. When Binance processes the message the timestamp is checked to be > the current time and < the current time + 5000ms (default). If the timestamp is outside these limits the following errors will be returned:
-`timestamps 1000ms ahead of server time` or `Timestamp for this request is outside of the recvWindow`
-The recvWindow is default 5000ms and can be changed using the `ReceiveWindow` configuration option. All times are communicated in UTC so there won't be any timezone issues. However, because of clock drifting it can be that the client UTC time is not the same as the server UTC time. It is therefor recommended clients use the `SP TimeSync` program to resync the client UTC time more often than windows does by default (every 10 minutes or less is recommended).
-
-## Websockets
-The Binance.Net socket client provides several socket endpoint to which can be subscribed. 
-
-````csharp
-var client = new BinanceSocketClient();
-// subscribe to updates on the spot API
-client.Spot.SubscribeToBookTickerUpdates("BTCUSDT", data => {
-  // Handle data
-});
-
-// subscribe to updates on the futures API
-client.Futures.SubscribeToBookTickerUpdates("BTCUSDT", data => {
-  // Handle data
-});
-
-````
-
-To subscribe to account update (balance updates, order updates, etc.) you need to create a listen key using the `BinanceClient`, then start the user stream for account updates on the `BinanceSocketClient`:
-````csharp
-var client = new BinanceClient(new BinanceClientOptions{
-	ApiCredentials = new ApiCredentials("APIKEY", "APISECRET")
-});
-var startResult = client.Spot.UserStream.StartUserStream();
-
-if(!startResult.Success)
-	throw new Exception($"Failed to start user stream: {startResult.Error}");
-
-var socketClient = new BinanceSocketClient();
-
-socketClient.Spot.SubscribeToUserDataUpdates(startResult.Data, 
-	orderUpdate => { // Handle order update
-	}, 
-	ocoUpdate => { // Handle oco order update
-	},
-	positionUpdate => { // Handle account position update
-	},
-	balanceUpdate => { // Handle balance update
-	});
-````
-
-`null` can be passed as a parameter to any of these handlers to ignore the events of that type.
-
-
-When no longer listening to private endpoints the `StopUserStream` method in `BinanceClient` should be used to signal the Binance server the stream can be closed.
-
-
 ## Release notes
+* Version 8.1.3 - 12 Jun 2022
+    * Fixed `invalid signature` error on multiple subaccount endpoints
+    * Fixed incorrect max limit on spot GetKlinesAsync
+    * Fixed missing datetime converter on rebate UpdateTime property
+    * Updated CryptoExchange.Net
+
+* Version 8.1.2 - 24 May 2022
+    * Fixed quoteQuantity not being passed on after checking trade rules
+    * Fixed Blvt stream address and moved it to Spot
+    * Updated CryptoExchange.Net
+
+* Version 8.1.1 - 23 May 2022
+    * Fixed parameter order trailing delta in PlaceOrderAsync
+
+* Version 8.1.0 - 22 May 2022
+    * Added LeveragedTokens user limit endpoint
+    * Added Staking endpoints
+    * Added USD futures transaction history download endpoints
+    * Added USD futures algo orders endpoints
+    * Added margin order rate limit endpoint
+    * Added interest margin data endpoint
+    * Added symbol collection overloads for GetPricesAsync, GetBookPricesAsync and GetTickersAsync
+    * Added symbol parameter for subaccount transfer
+    * Added margin account types for subaccount transfer
+    * Added TrailingDelta support
+    * Added quoteQuantity minimal notional value TradeRule validation
+    * Renamed GetAllBookPricesAsync to GetBookPricesAsync
+
+* Version 8.0.13 - 08 May 2022
+    * Added TierAnnualInterestRate to BinanceFlexibleProductPosition
+    * Changed GetFlexibleProductPositionAsync asset parameter to be optional
+    * Updated CryptoExchange.Net
+
+* Version 8.0.12 - 01 May 2022
+    * Updated CryptoExchange.Net which fixed an timing related issue in the websocket reconnection logic
+    * Fixed TrailingDelta symbol filter serialization
+    * Added seconds representation to KlineInterval enum
+
+* Version 8.0.11 - 20 Apr 2022
+    * Added trailing delta symbol filter parsing
+
+* Version 8.0.10 - 14 Apr 2022
+    * Fixed request weight for order book requests
+    * Updated CryptoExchange.Net
+
+* Version 8.0.9 - 18 Mar 2022
+    * Fixed Spot MiniTicker subscription having swapped base/quote volume properties
+    * Fixed exception getting thrown when CancelOrderAsync on USD futures fails
+
+* Version 8.0.8 - 10 Mar 2022
+    * Changed MobileNumber type from long to string, fixing GetSubAccountStatusAsync deserialization when no phone number is defined
+    * Updated CryptoExchange.Net
+
+* Version 8.0.7 - 08 Mar 2022
+    * Fixed inconsistent naming in BinanceLendingAccount model
+    * Added AllowTrailingStop property on BinanceSymbol
+    * Added new symbol filter PercentagePriceBySide
+    * Updated spot GetOrderBookAsync to allow any limit under 5000
+    * Updated CryptoExchange.Net
+
+* Version 8.0.6 - 01 Mar 2022
+    * Updated CryptoExchange.Net improving the websocket reconnection robustness
+
+* Version 8.0.5 - 01 Mar 2022
+    * Updated Limit checking on Usd futures GetMarkPriceKlinesAsync
+    * Added time sync resetting when a timestamp error is received
+
+* Version 8.0.4 - 27 Feb 2022
+    * Updated CryptoExchange.Net to fix timestamping issue when request is ratelimiter
+    * Updated USD futures kline requests max limit value check
+
+* Version 8.0.3 - 25 Feb 2022
+    * Fixed missing AccountType enum value breaking the spot GetExchangeInfoAsync call
+
+* Version 8.0.2 - 24 Feb 2022
+    * Fixed TradeRules not being applied
+    * Updated CryptoExchange.Net
+
+* Version 8.0.1 - 21 Feb 2022
+    * Fixed ContractType being nullable
+    * Fixed OrderType filename
+
+* Version 8.0.0 - 18 Feb 2022
+	* Added Github.io page for documentation: https://jkorf.github.io/Binance.Net/
+	* Added unit tests for parsing the returned JSON for each endpoint and subscription
+	* Added AddBinance extension method on IServiceCollection for easy dependency injection
+	* Added URL reference to API endpoint documentation for each endpoint
+	* Added default rate limiter
+
+	* Refactored client structure to be consistent across exchange implementations
+	* Renamed various properties to be consistent across exchange implementations
+
+	* Cleaned up project structure
+	* Fixed various models
+
+	* Updated CryptoExchange.Net, see https://github.com/JKorf/CryptoExchange.Net#release-notes
+	* See https://jkorf.github.io/Binance.Net/MigrationGuide.html for additional notes for updating from V7 to V8
+
+* Version 7.2.5 - 08 Oct 2021
+    * Updated CryptoExchange.Net to fix some socket issues
+
+* Version 7.2.4 - 06 Oct 2021
+    * Updated CryptoExchange.Net, fixing socket issue when calling from .Net Framework
+
+* Version 7.2.3 - 05 Oct 2021
+    * Added PriceProtect support
+
+* Version 7.2.2 - 29 Sep 2021
+    * Fix for BinanceSpotOrderBook
+    * Updated CryptoExchange.Net
+
+* Version 7.2.1 - 24 Sep 2021
+    * Added GetEnabledIsolatedMarginAccountLimitAsync endpoint
+    * Added EnableIsolatedMarginAccountAsync
+    * Added Enabled property to IsolatedMarginAccount model
+    * Added RemoveLiquidityPreviewAsync endpoint
+    * Added AddLiquidityPreviewAsync endpoint
+    * Added GetBSwapPoolConfigureAsync endpoint
+
+* Version 7.2.0 - 20 Sep 2021
+    * Updated stream Topic properties to reflect symbol where possible
+    * Added DisableIsolatedMarginAccountAysnc endpoint
+    * Updated CryptoExchange.Net
+
+* Version 7.1.4 - 15 Sep 2021
+    * Updated CryptoExchange.Net
+    * Fixed missing interface CoinFutures system sub client
+
+* Version 7.1.3 - 14 Sep 2021
+    * Fixed CreateVirtualSubAccountAsync endpoint
+    * Added missing FiatWithdrawDepositStatus entry
+    * Updated testnet spot websocket url
+
+* Version 7.1.2 - 02 Sep 2021
+    * Fixed subaccount universal transfer result deserialization
+    * Fix for disposing order book closing socket even if there are other connections
+
+* Version 7.1.1 - 31 Aug 2021
+    * Added optional start/endTime parameters to GetDusLogAsync
+    * Fixed futures position deserialization
+
+* Version 7.1.0 - 30 Aug 2021
+    * Added Margin OCO endpoints
+    * Fixed TransferSubAccountAsync parameters
+    * Updated various models
+
+* Version 7.0.5 - 26 Aug 2021
+    * Updated CryptoExchange.Net, fixing reconnecting/resubscribing sockets with multiple subscriptions on a single connection
+
+* Version 7.0.4 - 24 Aug 2021
+    * Actually included fix for multiple symbols in GetExchangeInfoAsync
+
+* Version 7.0.3 - 24 Aug 2021
+    * Updated CryptoExchange.Net, improving websocket and SymbolOrderBook performance
+    * Fix for GetExchangeInfoAsync filter by multiple symbols
+
+* Version 7.0.2 - 16 Aug 2021
+    * Added orderId parameter to GetUserTradesAsync
+    * Added missing TransferAsync to client interface
+
+* Version 7.0.1 - 13 Aug 2021
+    * Fix for OperationCancelledException being thrown when closing a socket from a .net framework project
+
+* Version 7.0.0 - 12 Aug 2021
+	* Release version with new CryptoExchange.Net version 4.0.0
+		* Multiple changes regarding logging and socket connection, see [CryptoExchange.Net release notes](https://github.com/JKorf/CryptoExchange.Net#release-notes)
+	* Fixed deserialization of GetMiningStatisticsAsync
+
+* Version 7.0.0-beta4 - 09 Aug 2021
+    * Added Fiat endpoints
+    * Renamed Get24HPriceAsync to GetTickerAsync
+    * Renamed GetMyTradesAsync to GetUserTradesAsync
+    * Renamed GetAllOrdersAsync to GetOrdersAsync
+    * Renamed GetSymbolTradesAsync to GetRecentTradeHistoryAsync
+    * Renamed GetHistoricalSymbolTradesAsync to GetTradeHistoryAsync
+    * Renamed GetAggregatedTradesAsync to GetAggregatedTradeHistoryAsync
+    * Renamed GetOpenMarginAccountOrdersAsync to GetMarginAccountOpenOrdersAsync
+    * Renamed GetAllMarginAccountOrdersAsync to GetMarginAccountOrdersAsync
+    * Renamed GetMyMarginAccountTradesAsync to GetMarginAccountUserTradesAsync
+    * Renamed various PnL properties to Pnl
+
+* Version 7.0.0-beta3 - 26 Jul 2021
+    * Updated CryptoExchange.Net
+
+* Version 7.0.0-beta2 - 22 Jul 2021
+    * Added GetFundingWalletAsync endpoint
+    * Added GetAPIKeyPermissionsAsync endpoint
+    * Merged master
+
+* Version 7.0.0-beta1 - 09 Jul 2021
+    * Added symbol filter for GetExchangeInfoAsync
+    * Added Async postfix for async methods
+    * Updated CryptoExchange.Net
+
+* Version 6.14.0-beta7 - 24 Jun 2021
+    * Fixed/updated multiple models
+
+* Version 6.14.0-beta6 - 19 Jun 2021
+    * Fixed invalid symbol check on SubscribeToMarkPriceUpdatesAsync
+    * Made TimeSync static to prevent re-doing when creating a new client
+
+* Version 6.14.0-beta5 - 07 Jun 2021
+    * Added BinanceApiAddresses class containing different api setups for easier
+    * Updated CryptoExchange.Net
+
+* Version 6.14.0-beta4 - 31 May 2021
+    * Added GetTradingStatusAsync endpoint on USDT futures
+    * Added GetMarkPriceKlinesAsync endpoint on futures
+    * Added GetProductsAsync endpoint
+    * Added GetContinuousContractKlinesAsync endpoint on USDT futures
+    * Added PayToMain and MainToPay transfer types
+    * Added MultiAssetMode endpoints and fields
+    * Removed no longer supported GetLiquidationOrdersAsync futures endpoints
+    * Added Assets property to USDT futures GetExchangeInfoAsync model
+    * Added BalanceChange to futures account balance stream update
+
+* Version 6.14.0-beta3 - 26 May 2021
+    * Removed all non-async calls
+    * Updated to CryptoExchange.Net changes
+
+* Version 6.14.0-beta2 - 06 mei 2021
+    * Updated CryptoExchange.Net
+
+* Version 6.14.0-beta1 - 30 apr 2021
+    * Updated to CryptoExchange.Net 4.0.0-beta1, new websocket implementation
+
 * Version 6.13.6 - 01 Aug 2021
     * Added missing SubscribeToKlineUpdatesAsync overload
 
